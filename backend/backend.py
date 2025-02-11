@@ -10,20 +10,20 @@ def get_db_connection():
         dbname=os.getenv("POSTGRES_DB"),
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
-        host="db",  # Docker service name
+        host="db",
         port="5432"
     )
     return conn
 
-@app.route('/messages', methods=['GET'])
-def get_messages():
+@app.route('/api/data')
+def get_data():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT text FROM messages;")
-    messages = [row[0] for row in cur.fetchall()]
+    cur.execute('SELECT message FROM test;')
+    data = cur.fetchone()
     cur.close()
     conn.close()
-    return jsonify(messages)
+    return jsonify({"message": data[0]})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
